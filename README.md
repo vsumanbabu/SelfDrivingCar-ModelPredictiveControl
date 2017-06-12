@@ -113,3 +113,23 @@ that's just a guess.
 
 One last note here: regardless of the IDE used, every submitted project must
 still be compilable with cmake and make./
+
+# Project Analysis
+
+Below is a brief analysis of the project that describes the Model, Timestep Length and Elapsed Duration (N & dt), Polynomial Fitting and MPC Preprocessing and latency 
+
+* A simple Kinematic model (ignores tire forces, gravity, mass, etc) was used for the Controller. Some attempts to build more complicated dynamic model were made, but with low success. It is essential to know parameters of the vehicle (such as law of response on the throttle, geometry of the car, drag model, tires properties, etc) to construct a reasonable dynamic model but such parameters are not derectly accessible from provided materials for the project.
+
+* Position (x,y), heading (ψ) and velocity (v) form the vehicle state vector:
+
+* State: [x,y,ψ,v] -- ( 5,5,45,0)
+
+* There are two actuators. Stearing angle (δ) is the first one, it should be in range [-25,25] deg. For simplicity the throttle and brake represented as a singular actuator (a), with negative values signifying braking and positive values signifying acceleration. It should be in range [-1,1].
+
+* Actuators: [δ,a]
+
+* The kinematic model can predict the state on the next time step by taking into account the current state and actuators as follows:
+<Equation 1>
+
+* where Lf measures the distance between the front of the vehicle and its center of gravity. The parameter was provided by Udacity. Errors: cross track error (cte) and ψ error (eψ) were used to build the cost function for the MPC. They could be updated on a new time step using the following equations:
+<Equation 2>
