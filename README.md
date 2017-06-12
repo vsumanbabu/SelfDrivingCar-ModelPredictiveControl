@@ -119,17 +119,32 @@ still be compilable with cmake and make./
 Below is a brief analysis of the project that describes the Model, Timestep Length and Elapsed Duration (N & dt), Polynomial Fitting and MPC Preprocessing and latency 
 
 * A simple Kinematic model (ignores tire forces, gravity, mass, etc) was used for the Controller. Some attempts to build more complicated dynamic model were made, but with low success. It is essential to know parameters of the vehicle (such as law of response on the throttle, geometry of the car, drag model, tires properties, etc) to construct a reasonable dynamic model but such parameters are not derectly accessible from provided materials for the project.
-
 * Position (x,y), heading (ψ) and velocity (v) form the vehicle state vector:
-
 * State: [x,y,ψ,v] -- ( 5,5,45,0)
-
 * There are two actuators. Stearing angle (δ) is the first one, it should be in range [-25,25] deg. For simplicity the throttle and brake represented as a singular actuator (a), with negative values signifying braking and positive values signifying acceleration. It should be in range [-1,1].
-
 * Actuators: [δ,a]
-
 * The kinematic model can predict the state on the next time step by taking into account the current state and actuators as follows:
-<Equation 1>
-
+https://github.com/vsumanbabu/SelfDrivingCar-ModelPredictiveControl/blob/master/equation1.png?raw=true
 * where Lf measures the distance between the front of the vehicle and its center of gravity. The parameter was provided by Udacity. Errors: cross track error (cte) and ψ error (eψ) were used to build the cost function for the MPC. They could be updated on a new time step using the following equations:
-<Equation 2>
+https://github.com/vsumanbabu/SelfDrivingCar-ModelPredictiveControl/blob/master/equation2.png?raw=true
+
+
+* One of the most important tasks was to tune parameters of the cost function and other parameters for the Model Predictive Controller. First of all, data about waypoints was transformed into the vehicle space and a 3d order polynomial was fitted to the data. Actual state of the vehicle was "shifted" into the future by 100 ms latency. It helps to reduce negative effects of the latency and increase stability of the controller. The latency was introduced to simulate real delay of a human driver or physical actuators in case of a self driving car. Cross track error and orientation error were calculated, is then they were passed into the MPC routine.
+* The time horizon (T) was chosen to 2 s after experiments. It was shown that the MPC could drive safely around the track with T = 1 s, but on a slow speed. Higher speed requires more future information to make smart decisions in serial turns. Time step duration (dt) was setted equal to the latancy of the simulation (0.1 s), hense, 20 time steps (N) was used.
+* The cost function parameters were tuned by try-and-error method. All these parameters are stored in the src/MPC.h file. They were tuned in order to reach maximal speed and agressive race style with use of the whole width of the road and breaking before turns.
+* Following parameters can be changed as below in MPC.h to get relatively slow but safe behaviour.
+```cpp
+#define REF_CTE 0
+#define REF_EPSI 0
+#define REF_V 40
+#define W_CTE 2
+#define W_EPSI 20
+#define W_V 1
+#define W_DELTA 100000
+#define W_A 20
+#define W_DDELTA 0
+#define W_DA 0
+```
+
+
+
