@@ -124,9 +124,9 @@ Below is a brief analysis of the project that describes the Model, Timestep Leng
 * There are two actuators. Stearing angle (δ) is the first one, it should be in range [-25,25] deg. For simplicity the throttle and brake represented as a singular actuator (a), with negative values signifying braking and positive values signifying acceleration. It should be in range [-1,1].
 * Actuators: [δ,a]
 * The kinematic model can predict the state on the next time step by taking into account the current state and actuators as follows:
-https://github.com/vsumanbabu/SelfDrivingCar-ModelPredictiveControl/blob/master/equation1.png?raw=true
+![alt text](https://github.com/vsumanbabu/SelfDrivingCar-ModelPredictiveControl/blob/master/equation1.png?raw=true "equation 1")
 * where Lf measures the distance between the front of the vehicle and its center of gravity. The parameter was provided by Udacity. Errors: cross track error (cte) and ψ error (eψ) were used to build the cost function for the MPC. They could be updated on a new time step using the following equations:
-https://github.com/vsumanbabu/SelfDrivingCar-ModelPredictiveControl/blob/master/equation2.png?raw=true
+![alt text](https://github.com/vsumanbabu/SelfDrivingCar-ModelPredictiveControl/blob/master/equation2.png?raw=true "equation 2")
 
 
 * One of the most important tasks was to tune parameters of the cost function and other parameters for the Model Predictive Controller. First of all, data about waypoints was transformed into the vehicle space and a 3d order polynomial was fitted to the data. Actual state of the vehicle was "shifted" into the future by 100 ms latency. It helps to reduce negative effects of the latency and increase stability of the controller. The latency was introduced to simulate real delay of a human driver or physical actuators in case of a self driving car. Cross track error and orientation error were calculated, is then they were passed into the MPC routine.
