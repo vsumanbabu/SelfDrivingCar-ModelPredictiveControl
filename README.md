@@ -124,7 +124,9 @@ Below is a brief analysis of the project that describes the Model, Timestep Leng
 * There are two actuators. Stearing angle (δ) is the first one, it should be in range [-25,25] deg. For simplicity the throttle and brake represented as a singular actuator (a), with negative values signifying braking and positive values signifying acceleration. It should be in range [-1,1].
 * Actuators: [δ,a]
 * The kinematic model can predict the state on the next time step by taking into account the current state and actuators as follows:
+
 ![alt text](https://github.com/vsumanbabu/SelfDrivingCar-ModelPredictiveControl/blob/master/equation1.png?raw=true "equation 1")
+
 * where Lf measures the distance between the front of the vehicle and its center of gravity. The parameter was provided by Udacity. Errors: cross track error (cte) and ψ error (eψ) were used to build the cost function for the MPC. They could be updated on a new time step using the following equations:
 ![alt text](https://github.com/vsumanbabu/SelfDrivingCar-ModelPredictiveControl/blob/master/equation2.png?raw=true "equation 2")
 
